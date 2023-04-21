@@ -1,31 +1,32 @@
-import { setupPlay } from './play.js'
+import inputFocus from './input-focus.js'
+import inputValidate from './input-validate.js'
 
-document.querySelector('#app').innerHTML = `
+const app = document.querySelector('#app');
+
+app.innerHTML = `
   <div class="container">
     <div id="messages">Ingresa tu número secreto</div>
-    <form id="form">
-      <div class="d-flex justify-content-between">
-        <div class="field px-1">
-          <input type="number" class="form-control">
-          <div class="invalid-feedback d-none"></div>
-        </div>
-        <div class="field px-1">
-          <input type="number" class="form-control">
-          <div class="invalid-feedback d-none"></div>
-        </div>
-        <div class="field px-1">
-          <input type="number" class="form-control">
-          <div class="invalid-feedback d-none"></div>
-        </div>
-        <div class="field px-1">
-          <input type="number" class="form-control">
-          <div class="invalid-feedback d-none"></div>
-        </div>
-        <div class="field px-1">
-          <button id="play" class="btn btn-primary" type="submit">Play</button>
-        </div>
+    <div class="d-flex justify-content-between">
+      <div class="field px-1">
+        <input type="number" class="form-control">
+        <div class="invalid-feedback d-none"></div>
       </div>
-    </form>
+      <div class="field px-1">
+        <input type="number" class="form-control">
+        <div class="invalid-feedback d-none"></div>
+      </div>
+      <div class="field px-1">
+        <input type="number" class="form-control">
+        <div class="invalid-feedback d-none"></div>
+      </div>
+      <div class="field px-1">
+        <input type="number" class="form-control">
+        <div class="invalid-feedback d-none"></div>
+      </div>
+      <div class="field px-1">
+        <button id="play" class="btn btn-primary" type="button">Play</button>
+      </div>
+    </div>
 
     <hr>
 
@@ -41,5 +42,6 @@ document.querySelector('#app').innerHTML = `
     </div>
   </div>
 `
-
-setupPlay(document.querySelector('#play'))
+inputFocus();
+inputValidate();
+//playGame();

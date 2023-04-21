@@ -1,8 +1,9 @@
 export function setupPlay(element) {
   const form = document.getElementById('form')
-  const fragment = document.createDocumentFragment()
-  let user_numbers = {}
-  let pc_numbers = {}
+  let user_numbersArr = [];
+  let user_pointsArr = [];
+  let pc_numbersArr = [];
+  let pc_pointsArr = [];
 
   //On Key inputs
   const inputs = document.getElementsByClassName('form-control')
@@ -10,7 +11,7 @@ export function setupPlay(element) {
     input.addEventListener("keyup", function(event) {
       if (input.value.length === 1) {
         // Focus on the next sibling
-        input.parentElement.nextElementSibling.firstElementChild.focus()
+        input.parentElement.nextElementSibling.firstElementChild.focus();
       }
     });
   })
@@ -65,15 +66,14 @@ export function setupPlay(element) {
             e.target[i].nextElementSibling.innerHTML = ''
             e.target[i].nextElementSibling.classList.add('d-none')
 
-            const user_number = {
-              id: Date.now(),
+            const user_numberObj = {
               first: e.target[0].value*1,
               second: e.target[1].value*1,
               third: e.target[2].value*1,
               fourth: e.target[3].value*1,
             }
 
-            user_numbers[user_number.id] = user_number
+            user_numbersArr.push(user_numberObj);
 
             form.reset()
 
@@ -86,16 +86,19 @@ export function setupPlay(element) {
 
   //Set user number
   const playGame = () => {
+    document.getElementById('messages').innerHTML = 'Adivina el número de la computadora'
+
     let numbers = [1,2,3,4,5,6,7,8,9]
 
     //Obtains random number from array "numbers"
     function random_item(numbers){
       return numbers[Math.floor(Math.random()*numbers.length)];
     }
-    
-    if(Object.keys(pc_numbers).length == 0){
-      //PC Secret Number Election
-      let pc_number = []
+
+    if(pc_numbersArr.length == 0){
+      console.log('No tiene valores')
+
+      let pc_number = [];
 
       for (var x = 0; x < 4; x++){
         let random_number = random_item(numbers)
@@ -104,27 +107,87 @@ export function setupPlay(element) {
       }
 
       const pc_numberObj = {
-        id: Date.now(),
         first: pc_number[0],
         second: pc_number[1],
         third: pc_number[2],
         fourth: pc_number[3],
       }
 
-      pc_numbers[pc_numberObj.id] = pc_numberObj;
+      pc_numbersArr.push(pc_numberObj);
 
     }else{
-      console.log('este objeto NO esta vacío')
+      console.log('tiene valores');
 
-      const recent_user_number = user_numbers[Object.keys(user_numbers)[Object.keys(user_numbers).length - 1]];
+      //User Secret Number
+      const usnObj = user_numbersArr[0];
 
-      console.log ('Numero del usuario reciente');
-      console.log(recent_user_number);
+      //PC Secret Number
+      const pcsnObj = pc_numbersArr[0];
 
-      console.log ('Numero secreto PC');
-      console.log(pc_numbers[0]);
+      console.log(usnObj);
+      console.log(pcsnObj);
+
+      //Ultimo numero intentado por el usuario (Last Try Number)
+      let user_ltn = user_numbersArr.length-1;
+      let user_ltnObj = user_numbersArr[user_ltn];
+
+      var point = []
+      
+      //Compare numbers
+      Object.entries(user_ltnObj).forEach(item => {
+        const [name, value] = item;
+        Object.entries(pcsnObj).forEach(item2 => {
+          const [name2, value2] = item2;
+          if(name == name2 && value == value2){point.push('F');}
+          if(name != name2 && value == value2){point.push('P');}          
+        });
+      });
+
+      const user_pointObj = {
+        first: point[0],
+        second: point[1],
+        third: point[2],
+        fourth: point[3],
+      }
+
+      user_pointsArr.push(user_pointObj);
+
+      const my_plays = document.getElementById('my_plays');
+      const my_score = document.getElementById('my_score');
+
+      //Make the User Play List in Html
+      var my_playList = '<ul>';
+      user_numbersArr.slice(1).forEach(function(item){
+        my_playList += '<li>'+item.first+','+item.second+','+item.third+','+item.fourth+'</li>';
+      });
+      my_playList += '</ul>'
+
+
+      //Make the User Score List in Html
+      var my_scoreList = '<ul>';
+      user_pointsArr.forEach(function(item){
+        var val1;
+        var val2;
+        var val3;
+        var val4;
+
+        if(typeof item.first != 'undefined'){val1 = item.first}else{val1 = ''}
+        if(typeof item.second != 'undefined'){val2 = item.second}else{val2 = ''}
+        if(typeof item.third != 'undefined'){val3 = item.third}else{val3 = ''}
+        if(typeof item.fourth != 'undefined'){val4 = item.fourth}else{val4 = ''}
+
+        my_scoreList += '<li>'+val1+val2+val3+val4+'</li>';
+      });
+      my_scoreList += '</ul>';
+
+      my_plays.innerHTML = my_playList;
+      my_score.innerHTML = my_scoreList;
+
+      //Check win game
+      if(point[0]=='F' && point[1]=='F' && point[2]=='F' && point[3]=='F'){
+        alert('GANASTE EL JUEGO');
+      }
 
     }
-  }
-    
+  }    
 }
